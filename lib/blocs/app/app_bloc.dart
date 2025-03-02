@@ -9,7 +9,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         super(const AppState()) {
     on<AppUserSubscriptionRequested>(_onUserSubscriptionRequested);
     on<AppLogoutPressed>(_onLogoutPressed);
-    on<AppTabPressed>(_onTabPressed);
   }
 
   final AuthRepository _authRepository;
@@ -20,7 +19,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   ) {
     return emit.onEach(
       _authRepository.user,
-      onData: (user) => emit(state.copyWith(user: user)),
+      onData: (user) => emit(state.copyWith(user: user, status: user != null ? AppStatus.authenticated : AppStatus.unauthenticated)),
       onError: addError,
     );
   }
@@ -30,12 +29,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) {
     _authRepository.signOut();
-  }
-
-  void _onTabPressed(
-    AppTabPressed event,
-    Emitter<AppState> emit,
-  ) {
-    emit(state.copyWith(tabSelected: event.tabSelected));
+    emit(state.copyWith(user: null, status: AppStatus.unauthenticated));
   }
 }
