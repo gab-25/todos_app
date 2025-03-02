@@ -1,4 +1,5 @@
 import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
+import 'package:energy_monitor_app/blocs/app/app_event.dart';
 import 'package:energy_monitor_app/blocs/app/app_state.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/ui/pages/home_page.dart';
@@ -17,7 +18,8 @@ class App extends StatelessWidget {
     return RepositoryProvider.value(
       value: _authRepository,
       child: BlocProvider(
-        create: (_) => AppBloc(authRepository: _authRepository),
+        create: (_) => AppBloc(authRepository: _authRepository)
+            ..add(const AppUserSubscriptionRequested()),
         child: const AppView(),
       ),
     );
@@ -29,13 +31,14 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppStatus status = context.select((AppBloc bloc) => bloc.state.status);
     return MaterialApp(
       title: 'Energy Monitor',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
         useMaterial3: true,
       ),
-      home: context.read<AppBloc>().state.status == AppStatus.authenticated
+      home: status == AppStatus.authenticated
           ? const HomePage()
           : const LoginPage(),
     );

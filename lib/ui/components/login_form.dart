@@ -1,6 +1,5 @@
 import 'package:energy_monitor_app/cubits/login/login_cubit.dart';
 import 'package:energy_monitor_app/cubits/login/login_state.dart';
-import 'package:energy_monitor_app/ui/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,10 +10,6 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
-        if (state.status == LoginStatus.success) {
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const HomePage()));
-        }
         if (state.status == LoginStatus.error) {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text('Login failed')));

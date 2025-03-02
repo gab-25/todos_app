@@ -8,6 +8,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((AppBloc bloc) => bloc.state.user);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -15,9 +16,13 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => context.read<AppBloc>().add(const AppLogoutPressed()),
+            onPressed: () =>
+                context.read<AppBloc>().add(const AppLogoutPressed()),
           ),
         ],
+      ),
+      body: Center(
+        child: Text(user?.email ?? 'No user'),
       ),
     );
   }
