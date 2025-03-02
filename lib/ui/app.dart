@@ -1,7 +1,7 @@
-import 'package:energy_monitor_app/home/view/home_page.dart';
-import 'package:energy_monitor_app/login/cubit/login_cubit.dart';
-import 'package:energy_monitor_app/login/cubit/login_state.dart';
-import 'package:energy_monitor_app/login/view/login_page.dart';
+import 'package:energy_monitor_app/ui/pages/home_page.dart';
+import 'package:energy_monitor_app/cubits/login/login_cubit.dart';
+import 'package:energy_monitor_app/cubits/login/login_state.dart';
+import 'package:energy_monitor_app/ui/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

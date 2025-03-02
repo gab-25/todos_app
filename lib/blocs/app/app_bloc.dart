@@ -1,7 +1,7 @@
-import 'package:energy_monitor_app/auth/data/repository/auth_repository.dart';
+import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:energy_monitor_app/app/bloc/app_event.dart';
-import 'package:energy_monitor_app/app/bloc/app_state.dart';
+import 'package:energy_monitor_app/blocs/app/app_event.dart';
+import 'package:energy_monitor_app/blocs/app/app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({required AuthRepository authRepository})

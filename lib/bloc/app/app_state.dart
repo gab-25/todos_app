@@ -1,8 +1,7 @@
-import 'package:energy_monitor_app/auth/data/model/user.dart';
+import 'package:energy_monitor_app/models/user.dart';
 import 'package:equatable/equatable.dart';
 
 enum AppStatus { authenticated, unauthenticated }
-
 class AppState extends Equatable {
   const AppState({
     this.status = AppStatus.unauthenticated,
