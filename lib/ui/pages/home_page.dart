@@ -1,6 +1,9 @@
 import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
 import 'package:energy_monitor_app/blocs/app/app_event.dart';
 import 'package:energy_monitor_app/blocs/app/app_state.dart';
+import 'package:energy_monitor_app/ui/pages/monitor_page.dart';
+import 'package:energy_monitor_app/ui/pages/settings_page..dart';
+import 'package:energy_monitor_app/ui/pages/statistics_page..dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,7 +12,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppTabs tabSelected = context.select((AppBloc bloc) => bloc.state.tabSelected);
+    final AppTabs tabSelected =
+        context.select((AppBloc bloc) => bloc.state.tabSelected);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -26,6 +30,20 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+      body: BlocBuilder<AppBloc, AppState>(
+        builder: (context, state) {
+          if (state.tabSelected == AppTabs.monitor) {
+            return MonitorPage();
+          }
+          if (state.tabSelected == AppTabs.statistics) {
+            return StatisticsPage();
+          }
+          if (state.tabSelected == AppTabs.settings) {
+            return SettingsPage();
+          }
+          return const Text('No page found!');
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
@@ -41,7 +59,8 @@ class HomePage extends StatelessWidget {
             label: AppTabs.settings.toString(),
           ),
         ],
-        onTap: (value) => context.read<AppBloc>().add(AppTabPressed(AppTabs.values[value])),
+        onTap: (value) =>
+            context.read<AppBloc>().add(AppTabPressed(AppTabs.values[value])),
         currentIndex: AppTabs.values.indexOf(tabSelected),
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
