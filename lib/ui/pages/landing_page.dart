@@ -68,9 +68,14 @@ class LandingPage extends StatelessWidget {
             label: AppTabs.settings.toString(),
           ),
         ],
-        onTap: (value) => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                LandingPage(tabSelected: AppTabs.values[value]))),
+        onTap: (value) => Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (_, __, ___) =>
+              LandingPage(tabSelected: AppTabs.values[value]),
+          transitionsBuilder: (_, animation, __, child) => FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        )),
         currentIndex: AppTabs.values.indexOf(_tabSelected),
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
