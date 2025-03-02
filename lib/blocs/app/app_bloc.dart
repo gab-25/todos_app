@@ -6,9 +6,10 @@ import 'package:energy_monitor_app/blocs/app/app_state.dart';
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({required AuthRepository authRepository})
       : _authRepository = authRepository,
-        super(AppState()) {
+        super(const AppState()) {
     on<AppUserSubscriptionRequested>(_onUserSubscriptionRequested);
     on<AppLogoutPressed>(_onLogoutPressed);
+    on<AppTabPressed>(_onTabPressed);
   }
 
   final AuthRepository _authRepository;
@@ -19,7 +20,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   ) {
     return emit.onEach(
       _authRepository.user,
-      onData: (user) => emit(AppState(user: user)),
+      onData: (user) => emit(state.copyWith(user: user)),
       onError: addError,
     );
   }
@@ -29,5 +30,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) {
     _authRepository.signOut();
+  }
+
+  void _onTabPressed(
+    AppTabPressed event,
+    Emitter<AppState> emit,
+  ) {
+    emit(state.copyWith(tabSelected: event.tabSelected));
   }
 }
