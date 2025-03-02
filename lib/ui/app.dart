@@ -1,12 +1,31 @@
+import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
+import 'package:energy_monitor_app/blocs/app/app_state.dart';
+import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/ui/pages/home_page.dart';
-import 'package:energy_monitor_app/cubits/login/login_cubit.dart';
-import 'package:energy_monitor_app/cubits/login/login_state.dart';
 import 'package:energy_monitor_app/ui/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({super.key, required AuthRepository authRepository})
+      : _authRepository = authRepository;
+
+  final AuthRepository _authRepository;
+
+  @override
+  Widget build(BuildContext context) {
+    return RepositoryProvider.value(
+      value: _authRepository,
+      child: BlocProvider(
+        create: (_) => AppBloc(authRepository: _authRepository),
+        child: const AppView(),
+      ),
+    );
+  }
+}
+
+class AppView extends StatelessWidget {
+  const AppView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +35,7 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
         useMaterial3: true,
       ),
-      home: context.read<LoginCubit>().state.status == LoginStatus.success
+      home: context.read<AppBloc>().state.status == AppStatus.authenticated
           ? const HomePage()
           : const LoginPage(),
     );

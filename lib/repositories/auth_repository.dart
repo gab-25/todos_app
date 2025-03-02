@@ -16,20 +16,20 @@ class AuthRepository {
     return _firebaseAuth.currentUser;
   }
 
-  Future<void> signUp({required String email, required String password}) async {
+  Future<bool> signUp({required String email, required String password}) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
-      throw const SignUpWithEmailAndPasswordFailure();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 
-  Future<void> signIn({
+  Future<bool> signIn({
     required String email,
     required String password,
   }) async {
@@ -38,20 +38,22 @@ class AuthRepository {
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (e) {
-      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
-      throw const LogInWithEmailAndPasswordFailure();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 
-  Future<void> signOut() async {
+  Future<bool> signOut() async {
     try {
       await Future.wait([
         _firebaseAuth.signOut(),
       ]);
-    } catch (_) {
-      throw LogOutFailure();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 }

@@ -1,9 +1,11 @@
 import 'package:energy_monitor_app/cubits/login/login_state.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(const LoginState());
+  LoginCubit(this._authRepository) : super(const LoginState());
+
+  final AuthRepository _authRepository;
 
   void onEmailChanged(String email) {
     emit(state.copyWith(email: email, status: LoginStatus.initial));
@@ -15,27 +17,11 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> onLogin() async {
     emit(state.copyWith(status: LoginStatus.loading));
-    try {
-      final UserCredential credential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: state.email,
-        password: state.password,
-      );
-      print("User: ${credential.user}");
-      if (credential.user != null) {
-        emit(state.copyWith(status: LoginStatus.success));
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+    bool result = await _authRepository.signIn(email: state.email, password: state.password);
+    if (result) {
+      emit(state.copyWith(status: LoginStatus.success));
+    } else {
       emit(state.copyWith(status: LoginStatus.error));
     }
-  }
-
-  void onLogout() {
-    emit(const LoginState());
   }
 }
