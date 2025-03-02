@@ -27,7 +27,8 @@ class LandingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        foregroundColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(_tabSelected.toString()),
         actions: [
           IconButton(
@@ -79,7 +80,7 @@ class LandingPage extends StatelessWidget {
         currentIndex: AppTabs.values.indexOf(_tabSelected),
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }

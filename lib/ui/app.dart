@@ -34,7 +34,10 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       title: 'Energy Monitor',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.yellow,
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
       ),
       home: BlocBuilder<AppBloc, AppState>(
