@@ -1,10 +1,7 @@
-import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
-import 'package:energy_monitor_app/blocs/app/app_event.dart';
-import 'package:energy_monitor_app/ui/pages/monitor_page.dart';
-import 'package:energy_monitor_app/ui/pages/settings_page..dart';
-import 'package:energy_monitor_app/ui/pages/statistics_page..dart';
+import 'package:energy_monitor_app/ui/components/monitor_tab.dart';
+import 'package:energy_monitor_app/ui/components/settings_tab.dart';
+import 'package:energy_monitor_app/ui/components/statistics_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum AppTabs {
   monitor,
@@ -30,27 +27,23 @@ class LandingPage extends StatelessWidget {
         foregroundColor: Colors.black,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(_tabSelected.toString()),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout_outlined),
-            onPressed: () =>
-                context.read<AppBloc>().add(const AppLogoutPressed()),
+            onPressed: () => Navigator.of(context).pushNamed('/profile'),
           ),
         ],
       ),
       body: Builder(builder: (context) {
         if (_tabSelected == AppTabs.monitor) {
-          return MonitorPage();
+          return const MonitorTab();
         }
         if (_tabSelected == AppTabs.statistics) {
-          return StatisticsPage();
+          return const StatisticsTab();
         }
         if (_tabSelected == AppTabs.settings) {
-          return SettingsPage();
+          return const SettingsTab();
         }
         return const Center(child: Text('Not widget found'));
       }),

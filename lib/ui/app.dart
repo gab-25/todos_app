@@ -4,6 +4,7 @@ import 'package:energy_monitor_app/blocs/app/app_state.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/ui/pages/landing_page.dart';
 import 'package:energy_monitor_app/ui/pages/login_page.dart';
+import 'package:energy_monitor_app/ui/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,6 +49,9 @@ class AppView extends StatelessWidget {
           return const LoginPage();
         },
       ),
+      routes: {
+        '/profile': (context) => const ProfilePage(),
+      },
     );
   }
 }

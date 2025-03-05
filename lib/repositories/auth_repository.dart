@@ -2,9 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepository {
-  AuthRepository({
-    required FirebaseAuth firebaseAuth,
-  }) : _firebaseAuth = firebaseAuth;
+  AuthRepository() : _firebaseAuth = FirebaseAuth.instance;
 
   final FirebaseAuth _firebaseAuth;
 
