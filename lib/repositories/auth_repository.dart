@@ -7,7 +7,7 @@ class AuthRepository {
   final FirebaseAuth _firebaseAuth;
 
   Stream<User?> get user {
-    return _firebaseAuth.authStateChanges().map((firebaseUser) => firebaseUser);
+    return _firebaseAuth.userChanges().map((firebaseUser) => firebaseUser);
   }
 
   User? get currentUser {

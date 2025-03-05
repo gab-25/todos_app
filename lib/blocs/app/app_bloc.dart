@@ -19,7 +19,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   ) {
     return emit.onEach(
       _authRepository.user,
-      onData: (user) => emit(state.copyWith(user: user, status: user != null ? AppStatus.authenticated : AppStatus.unauthenticated)),
+      onData: (user) {
+        emit(state.copyWith(
+            user: user,
+            status: user != null
+                ? AppStatus.authenticated
+                : AppStatus.unauthenticated));
+      },
       onError: addError,
     );
   }
@@ -29,6 +35,5 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) {
     _authRepository.signOut();
-    emit(state.copyWith(user: null, status: AppStatus.unauthenticated));
   }
 }
