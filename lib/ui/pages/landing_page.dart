@@ -71,8 +71,8 @@ class LandingPage extends StatelessWidget {
           ),
         )),
         currentIndex: AppTabs.values.indexOf(_tabSelected),
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Theme.of(context).colorScheme.surface,
+        unselectedItemColor: Theme.of(context).colorScheme.secondary,
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );

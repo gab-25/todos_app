@@ -38,6 +38,7 @@ class AppView extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.yellow,
           brightness: Brightness.dark,
+          primary: Colors.yellow[400],
         ),
         useMaterial3: true,
       ),
