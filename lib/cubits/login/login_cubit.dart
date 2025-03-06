@@ -1,6 +1,8 @@
-import 'package:energy_monitor_app/cubits/login/login_state.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._authRepository) : super(const LoginState());

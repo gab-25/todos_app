@@ -1,8 +1,6 @@
-import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+part of 'app_bloc.dart';
 
 enum AppStatus { authenticated, unauthenticated }
-
 class AppState extends Equatable {
   const AppState({this.user, this.status = AppStatus.unauthenticated});
 
@@ -10,7 +8,7 @@ class AppState extends Equatable {
   final User? user;
 
   @override
-  List<Object> get props => [status];
+  List<Object?> get props => [status, user];
 
   AppState copyWith({User? user, AppStatus? status}) {
     return AppState(

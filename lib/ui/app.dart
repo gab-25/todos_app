@@ -1,6 +1,4 @@
 import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
-import 'package:energy_monitor_app/blocs/app/app_event.dart';
-import 'package:energy_monitor_app/blocs/app/app_state.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/ui/pages/landing_page.dart';
 import 'package:energy_monitor_app/ui/pages/login_page.dart';
@@ -20,7 +18,7 @@ class App extends StatelessWidget {
       value: _authRepository,
       child: BlocProvider(
         create: (_) => AppBloc(authRepository: _authRepository)
-          ..add(const AppUserSubscriptionRequested()),
+          ..add(const AppStatusChanged()),
         child: const AppView(),
       ),
     );
