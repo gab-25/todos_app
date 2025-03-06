@@ -5,7 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit(this._authRepository) : super(const ProfileState());
+  ProfileCubit(this._authRepository)
+      : super(ProfileState(
+          name: _authRepository.currentUser!.displayName ?? '',
+          avatar: _authRepository.currentUser!.photoURL ?? '',
+        ));
 
   final AuthRepository _authRepository;
 

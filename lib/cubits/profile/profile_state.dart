@@ -4,8 +4,8 @@ enum ProfileStatus { initial, loading, success, error }
 
 class ProfileState extends Equatable {
   const ProfileState({
-    this.name = '',
-    this.avatar = '',
+    required this.name,
+    required this.avatar,
     this.status = ProfileStatus.initial,
   });
 
