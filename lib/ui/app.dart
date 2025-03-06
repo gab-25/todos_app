@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatelessWidget {
-  const App({super.key, required AuthRepository authRepository})
-      : _authRepository = authRepository;
+  const App({super.key, required AuthRepository authRepository}) : _authRepository = authRepository;
 
   final AuthRepository _authRepository;
 
@@ -17,8 +16,7 @@ class App extends StatelessWidget {
     return RepositoryProvider.value(
       value: _authRepository,
       child: BlocProvider(
-        create: (_) => AppBloc(authRepository: _authRepository)
-          ..add(const AppStatusChanged()),
+        create: (_) => AppBloc(authRepository: _authRepository)..add(const AppStatusChanged()),
         child: const AppView(),
       ),
     );

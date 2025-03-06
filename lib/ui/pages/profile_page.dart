@@ -1,4 +1,5 @@
 import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
+import 'package:energy_monitor_app/cubits/profile/profile_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,21 +29,17 @@ class ProfilePage extends StatelessWidget {
                     : const Icon(Icons.person, size: 80),
               ),
               const SizedBox(height: 10),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 48),
-                      child: Text(user.displayName ?? 'No name'),
-                    ),
-                    IconButton(
-                      onPressed: () => showDialog(
-                          context: context,
-                          builder: (context) =>
-                              _dialogChangeAvatarAndName(context, user)),
-                      icon: const Icon(Icons.edit),
-                    ),
-                  ]),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 48),
+                  child: Text(user.displayName ?? 'No name'),
+                ),
+                IconButton(
+                  onPressed: () =>
+                      showDialog(context: context, builder: (context) => _dialogChangeAvatarAndName(context, user)),
+                  icon: const Icon(Icons.edit),
+                ),
+              ]),
               const SizedBox(height: 10),
               Text(user.email!),
               const SizedBox(height: 10),
@@ -63,8 +60,7 @@ class ProfilePage extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Theme.of(context).colorScheme.inverseSurface),
+                    border: Border.all(color: Theme.of(context).colorScheme.inverseSurface),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Column(children: [
@@ -88,28 +84,18 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  SimpleDialog _dialogChangeAvatarAndName(BuildContext context, User user) {
-    TextEditingController newAvatarCtrl =
-        TextEditingController(text: user.photoURL);
-    TextEditingController newNameCtrl = TextEditingController(text: user.displayName);
-
+  SimpleDialog _dialogChangeAvatarAndName(BuildContext context) {
     return SimpleDialog(
       title: const Text('Edit profile'),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(10),
           child: Column(children: [
-            // TextField(
-            //   decoration: const InputDecoration(
-            //     labelText: 'Avatar',
-            //   ),
-            //   onChanged: (value) => newAvatar = value,
-            // ),
             TextField(
               decoration: const InputDecoration(
                 labelText: 'Name',
               ),
-              controller: newNameCtrl,
+              onChanged: (value) => context.read<ProfileCubit>().onNameChanged(value),
             ),
           ]),
         ),
@@ -122,14 +108,8 @@ class ProfilePage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                // if (newAvatarCtrl.text.isNotEmpty && newAvatarCtrl.text != user.photoURL) {
-                //   await user.updatePhotoURL(newAvatarCtrl.text);
-                // }
-                if (newNameCtrl.text.isNotEmpty &&
-                    newNameCtrl.text != user.displayName) {
-                  await user.updateDisplayName(newNameCtrl.text);
-                  context.read<AppBloc>().add(const AppUserUpdated());
-                }
+                await context.read<ProfileCubit>().onSave();
+                context.read<AppBloc>().add(const AppUserUpdated());
                 Navigator.of(context).pop();
               },
               child: const Text('Save'),

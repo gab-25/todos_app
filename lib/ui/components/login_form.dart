@@ -10,15 +10,13 @@ class LoginForm extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state.status == LoginStatus.error) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Login failed')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login failed')));
         }
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Text('Login',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          const Text('Login', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           const SizedBox(height: 30),
           TextField(
             decoration: const InputDecoration(
@@ -26,8 +24,7 @@ class LoginForm extends StatelessWidget {
               labelText: 'Email',
             ),
             keyboardType: TextInputType.emailAddress,
-            onChanged: (value) =>
-                context.read<LoginCubit>().onEmailChanged(value),
+            onChanged: (value) => context.read<LoginCubit>().onEmailChanged(value),
           ),
           const SizedBox(height: 20),
           TextField(
@@ -36,8 +33,7 @@ class LoginForm extends StatelessWidget {
               labelText: 'Password',
             ),
             obscureText: true,
-            onChanged: (value) =>
-                context.read<LoginCubit>().onPasswordChanged(value),
+            onChanged: (value) => context.read<LoginCubit>().onPasswordChanged(value),
           ),
           const SizedBox(height: 30),
           SizedBox(

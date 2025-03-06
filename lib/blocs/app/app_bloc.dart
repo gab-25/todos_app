@@ -7,9 +7,7 @@ part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  AppBloc({required AuthRepository authRepository})
-      : _authRepository = authRepository,
-        super(const AppState()) {
+  AppBloc(this._authRepository) : super(const AppState()) {
     on<AppStatusChanged>(_onAppStatusChanged);
     on<AppLogoutPressed>(_onLogoutPressed);
     on<AppUserUpdated>(_onAppUserUpdated);
@@ -24,11 +22,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     return emit.onEach(
       _authRepository.user,
       onData: (user) {
-        emit(state.copyWith(
-            user: user,
-            status: user != null
-                ? AppStatus.authenticated
-                : AppStatus.unauthenticated));
+        emit(state.copyWith(user: user, status: user != null ? AppStatus.authenticated : AppStatus.unauthenticated));
       },
       onError: addError,
     );

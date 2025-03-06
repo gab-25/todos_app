@@ -15,8 +15,7 @@ enum AppTabs {
 }
 
 class LandingPage extends StatelessWidget {
-  const LandingPage({super.key, required AppTabs tabSelected})
-      : _tabSelected = tabSelected;
+  const LandingPage({super.key, required AppTabs tabSelected}) : _tabSelected = tabSelected;
 
   final AppTabs _tabSelected;
 
@@ -63,8 +62,7 @@ class LandingPage extends StatelessWidget {
           ),
         ],
         onTap: (value) => Navigator.of(context).push(PageRouteBuilder(
-          pageBuilder: (_, __, ___) =>
-              LandingPage(tabSelected: AppTabs.values[value]),
+          pageBuilder: (_, __, ___) => LandingPage(tabSelected: AppTabs.values[value]),
           transitionsBuilder: (_, animation, __, child) => FadeTransition(
             opacity: animation,
             child: child,
