@@ -30,6 +30,7 @@ class LandingPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.account_circle_outlined),
+            iconSize: 32,
             onPressed: () => Navigator.of(context).pushNamed('/profile'),
           ),
         ],
