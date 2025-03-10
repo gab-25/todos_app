@@ -1,5 +1,6 @@
 import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
+import 'package:energy_monitor_app/repositories/db_repository.dart';
 import 'package:energy_monitor_app/ui/pages/landing_page.dart';
 import 'package:energy_monitor_app/ui/pages/login_page.dart';
 import 'package:energy_monitor_app/ui/pages/profile_page.dart';
@@ -7,16 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatelessWidget {
-  const App({super.key, required AuthRepository authRepository}) : _authRepository = authRepository;
-
-  final AuthRepository _authRepository;
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: _authRepository,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (_) => AuthRepository()),
+        RepositoryProvider(create: (_) => DbRepository()),
+      ],
       child: BlocProvider(
-        create: (_) => AppBloc(_authRepository)..add(const AppStatusChanged()),
+        create: (context) => AppBloc(context.read<AuthRepository>())..add(const AppStatusChanged()),
         child: const AppView(),
       ),
     );

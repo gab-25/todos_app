@@ -1,4 +1,3 @@
-import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/ui/app.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,5 @@ Future<void> main() async {
   await FirebaseMessaging.instance.requestPermission();
   print('Firebase Messaging token: ${await FirebaseMessaging.instance.getToken()}');
 
-  final AuthRepository authRepository = AuthRepository();
-
-  runApp(App(authRepository: authRepository));
+  runApp(const App());
 }
