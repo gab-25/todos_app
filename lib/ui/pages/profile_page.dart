@@ -82,7 +82,7 @@ class ProfilePage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 10),
-                            state.shellyCloudConnected ? const Icon(Icons.check_circle) : const Icon(Icons.cancel),
+                            // state.shellyCloudConnected ? const Icon(Icons.check_circle) : const Icon(Icons.cancel),
                           ],
                         ),
                         const SizedBox(height: 10),
