@@ -82,18 +82,20 @@ class ProfilePage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 10),
-                            // state.shellyCloudConnected ? const Icon(Icons.check_circle) : const Icon(Icons.cancel),
+                            state.shellyCloudConnected ? const Icon(Icons.check_circle) : const Icon(Icons.cancel),
                           ],
                         ),
                         const SizedBox(height: 10),
                         FilledButton(
-                          onPressed: () => showDialog(
-                            context: context,
-                            builder: (_) => BlocProvider.value(
-                              value: BlocProvider.of<ProfileCubit>(context),
-                              child: const ShellyCloudConnectDialog(),
-                            ),
-                          ),
+                          onPressed: state.shellyCloudConnected == false
+                              ? () => showDialog(
+                                    context: context,
+                                    builder: (_) => BlocProvider.value(
+                                      value: BlocProvider.of<ProfileCubit>(context),
+                                      child: const ShellyCloudConnectDialog(),
+                                    ),
+                                  )
+                              : null,
                           child: const Text('Connect'),
                         ),
                       ])),
@@ -198,7 +200,7 @@ class ShellyCloudConnectDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     TextButton(
-                      onPressed: () => state.status != ProfileStatus.loading ? Navigator.of(context).pop() : null,
+                      onPressed: state.status != ProfileStatus.loading ? () => Navigator.of(context).pop() : null,
                       child: const Text('Cancel'),
                     ),
                     TextButton(

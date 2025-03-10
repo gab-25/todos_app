@@ -15,7 +15,9 @@ class ProfileCubit extends Cubit<ProfileState> {
           email: _authRepository.currentUser!.email!,
           name: _authRepository.currentUser!.displayName ?? '',
           avatar: _authRepository.currentUser!.photoURL ?? '',
-        ));
+        )) {
+    _init();
+  }
 
   final AuthRepository _authRepository;
   final DbRepository _dbRepository;
@@ -25,6 +27,11 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   String? _shellyCloudEmailCtrl;
   String? _shellyCloudPasswordCtrl;
+
+  void _init() async {
+    final userStates = await _dbRepository.getStates(_authRepository.currentUser!.uid);
+    emit(state.copyWith(shellyCloudConnected: userStates?.shellyCloudConnected ?? false));
+  }
 
   void onEditNameChanged(String name) {
     _editNameCtrl = name;
@@ -80,10 +87,10 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
       print('Shelly Cloud sign in success');
       await _dbRepository.saveShellyCloudResponseToken(jsonResponseToken, _authRepository.currentUser!.uid);
-      emit(state.copyWith(status: ProfileStatus.success));
+      emit(state.copyWith(status: ProfileStatus.success, shellyCloudConnected: true));
     } catch (e) {
       print(e);
-      emit(state.copyWith(status: ProfileStatus.error));
+      emit(state.copyWith(status: ProfileStatus.error, shellyCloudConnected: false));
     }
   }
 }
