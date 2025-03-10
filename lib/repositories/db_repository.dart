@@ -8,4 +8,15 @@ class DbRepository {
 
   final FirebaseFirestore _firestore;
   final FirebaseDatabase _database;
+
+  Future<Map<String, dynamic>?> getSettings(String userId) async {
+    final userSettings = await _firestore.collection('settings').doc(userId).get();
+    return userSettings.data();
+  }
+
+  Future<void> saveShellyCloudResponseToken(Map<String, dynamic> responseToken, String userId) async {
+    final userSettings = _firestore.collection('settings').doc(userId);
+    await userSettings.set({'shelly_cloud': responseToken}, SetOptions(merge: true));
+    print('Shelly Cloud response token saved');
+  }
 }
