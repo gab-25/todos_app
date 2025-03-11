@@ -114,55 +114,62 @@ class EditProfileDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: const Text('Edit profile', textAlign: TextAlign.center),
-      children: <Widget>[
-        BlocBuilder<ProfileCubit, ProfileState>(
-          builder: (context, state) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: <Widget>[
-                Column(children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Avatar',
+    return BlocListener<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state.status == ProfileStatus.success) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated')));
+        }
+      },
+      child: SimpleDialog(
+        title: const Text('Edit profile', textAlign: TextAlign.center),
+        children: <Widget>[
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: <Widget>[
+                  Column(children: [
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Avatar',
+                      ),
+                      initialValue: state.avatar,
+                      // onChanged: (value) => context.read<ProfileCubit>().onEditAvatarChanged(value),
                     ),
-                    initialValue: state.avatar,
-                    // onChanged: (value) => context.read<ProfileCubit>().onEditAvatarChanged(value),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
+                      ),
+                      initialValue: state.name,
+                      onChanged: (value) => context.read<ProfileCubit>().onEditNameChanged(value),
+                    ),
+                  ]),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: state.status != ProfileStatus.loading ? () => Navigator.of(context).pop() : null,
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: state.status != ProfileStatus.loading
+                            ? () async {
+                                await context.read<ProfileCubit>().onSave();
+                                context.read<AppBloc>().add(const AppUserUpdated());
+                                Navigator.of(context).pop();
+                              }
+                            : null,
+                        child: const Text('Save'),
+                      ),
+                    ],
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Name',
-                    ),
-                    initialValue: state.name,
-                    onChanged: (value) => context.read<ProfileCubit>().onEditNameChanged(value),
-                  ),
-                ]),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: state.status != ProfileStatus.loading ? () => Navigator.of(context).pop() : null,
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: state.status != ProfileStatus.loading
-                          ? () async {
-                              await context.read<ProfileCubit>().onSave();
-                              context.read<AppBloc>().add(const AppUserUpdated());
-                              Navigator.of(context).pop();
-                            }
-                          : null,
-                      child: const Text('Save'),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -172,53 +179,63 @@ class ShellyCloudConnectDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: const Text('Login Shelly Cloud', textAlign: TextAlign.center),
-      children: <Widget>[
-        BlocBuilder<ProfileCubit, ProfileState>(
-          builder: (context, state) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: <Widget>[
-                Column(children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
+    return BlocListener<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state.status == ProfileStatus.success) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Shelly Cloud connected')));
+        }
+        if (state.status == ProfileStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Shelly Cloud connection failed')));
+        }
+      },
+      child: SimpleDialog(
+        title: const Text('Login Shelly Cloud', textAlign: TextAlign.center),
+        children: <Widget>[
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: <Widget>[
+                  Column(children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                      ),
+                      onChanged: (value) => context.read<ProfileCubit>().onShellyCloudEmailChanged(value),
                     ),
-                    onChanged: (value) => context.read<ProfileCubit>().onShellyCloudEmailChanged(value),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                      ),
+                      obscureText: true,
+                      onChanged: (value) => context.read<ProfileCubit>().onShellyCloudPasswordChanged(value),
+                    ),
+                  ]),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: state.status != ProfileStatus.loading ? () => Navigator.of(context).pop() : null,
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: state.status != ProfileStatus.loading
+                            ? () async {
+                                await context.read<ProfileCubit>().onShellyCloudSignIn();
+                                Navigator.of(context).pop();
+                              }
+                            : null,
+                        child: const Text('Sign In'),
+                      ),
+                    ],
                   ),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    onChanged: (value) => context.read<ProfileCubit>().onShellyCloudPasswordChanged(value),
-                  ),
-                ]),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: state.status != ProfileStatus.loading ? () => Navigator.of(context).pop() : null,
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: state.status != ProfileStatus.loading
-                          ? () async {
-                              await context.read<ProfileCubit>().onShellyCloudSignIn();
-                              Navigator.of(context).pop();
-                            }
-                          : null,
-                      child: const Text('Sign In'),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

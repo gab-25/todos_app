@@ -24,7 +24,7 @@ class DbRepository {
     if (!userStates.exists) {
       return null;
     }
-    return UserStates.fromJson(userStates.value as Map<String, dynamic>);
+    return UserStates.fromJson(userStates.value as Map<dynamic, dynamic>);
   }
 
   Future<void> saveShellyCloudResponseToken(Map<String, dynamic> responseToken, String userId) async {
