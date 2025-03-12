@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/repositories/db_repository.dart';
+import 'package:energy_monitor_app/services/shelly_cloud_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
-import 'package:crypto/crypto.dart';
 
 part 'profile_state.dart';
 
@@ -29,7 +26,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   String? _shellyCloudPasswordCtrl;
 
   void _init() async {
-    final userStates = await _dbRepository.getStates(_authRepository.currentUser!.uid);
+    final userStates = await _dbRepository.getCurrentStates(_authRepository.currentUser!.uid);
     emit(state.copyWith(shellyCloudConnected: userStates?.shellyCloudConnected ?? false));
   }
 
@@ -63,28 +60,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> onShellyCloudSignIn() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      final http.Response responseAuthorization =
-          await http.post(Uri.parse('https://api.shelly.cloud/oauth/login'), body: {
-        'email': _shellyCloudEmailCtrl,
-        'password': sha1.convert(utf8.encode(_shellyCloudPasswordCtrl!)).toString(),
-        'client_id': 'shelly-diy',
-      });
-      final Map<String, dynamic> jsonResponseAuthorization = json.decode(responseAuthorization.body);
-      if (jsonResponseAuthorization['isok'] == false) {
-        throw Exception(jsonResponseAuthorization['errors']);
-      }
-      final String authorizationCode = jsonResponseAuthorization['data']['code'];
-      final Map<String, dynamic> userData =
-          json.decode(utf8.decode(base64.decode(base64.normalize(authorizationCode.split('.')[1]))));
-      final http.Response responseToken = await http.post(Uri.parse("${userData['user_api_url']}/oauth/auth"), body: {
-        'client_id': 'shelly-diy',
-        'grant_type': 'code',
-        'code': authorizationCode,
-      });
-      final Map<String, dynamic> jsonResponseToken = json.decode(responseToken.body);
-      if (jsonResponseToken['isok'] == false) {
-        throw Exception(jsonResponseToken['errors']);
-      }
+      //TODO: move ShellyCloudService to context
+      final jsonResponseToken = await const ShellyCloudService().getAccessToken(_shellyCloudEmailCtrl!, _shellyCloudPasswordCtrl!);
       print('Shelly Cloud sign in success');
       await _dbRepository.saveShellyCloudResponseToken(jsonResponseToken, _authRepository.currentUser!.uid);
       emit(state.copyWith(status: ProfileStatus.success, shellyCloudConnected: true));
