@@ -15,10 +15,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   final AuthRepository _authRepository;
 
-  Future<void> _onAppStatusChanged(
-    AppStatusChanged event,
-    Emitter<AppState> emit,
-  ) {
+  Future<void> _onAppStatusChanged(AppStatusChanged event, Emitter<AppState> emit) {
     return emit.onEach(
       _authRepository.user,
       onData: (user) {
@@ -28,10 +25,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     );
   }
 
-  void _onLogoutPressed(
-    AppLogoutPressed event,
-    Emitter<AppState> emit,
-  ) async {
+  void _onLogoutPressed(AppLogoutPressed event, Emitter<AppState> emit) async {
     await _authRepository.signOut();
     emit(state.copyWith(
       user: null,
@@ -39,10 +33,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     ));
   }
 
-  void _onAppUserUpdated(
-    AppUserUpdated event,
-    Emitter<AppState> emit,
-  ) {
+  void _onAppUserUpdated(AppUserUpdated event, Emitter<AppState> emit) {
     emit(state.copyWith(user: _authRepository.currentUser));
   }
 }

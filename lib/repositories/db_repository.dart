@@ -19,7 +19,14 @@ class DbRepository {
     return UserSettings.fromJson(userSettings.data()!);
   }
 
-  Future<UserStates?> getStates(String userId) async {
+  Stream<UserStates> getStates(String userId) {
+    final userStates = _database.ref().child('states/$userId');
+    return userStates.onValue.where((event) => event.snapshot.value != null).map((event) {
+      return UserStates.fromJson(event.snapshot.value as Map<dynamic, dynamic>);
+    });
+  }
+
+  Future<UserStates?> getCurrentStates(String userId) async {
     final userStates = await _database.ref().child('states/$userId').get();
     if (!userStates.exists) {
       return null;
