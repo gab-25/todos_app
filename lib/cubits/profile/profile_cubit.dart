@@ -18,6 +18,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   final AuthRepository _authRepository;
   final DbRepository _dbRepository;
+  final ShellyCloudService _shellyCloudService = const ShellyCloudService();
 
   String? _editNameCtrl;
   String? _editAvatarCtrl;
@@ -60,8 +61,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> onShellyCloudSignIn() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      //TODO: move ShellyCloudService to context
-      final jsonResponseToken = await const ShellyCloudService().getAccessToken(_shellyCloudEmailCtrl!, _shellyCloudPasswordCtrl!);
+      final jsonResponseToken = await _shellyCloudService.getAccessToken(_shellyCloudEmailCtrl!, _shellyCloudPasswordCtrl!);
       print('Shelly Cloud sign in success');
       await _dbRepository.saveShellyCloudResponseToken(jsonResponseToken, _authRepository.currentUser!.uid);
       emit(state.copyWith(status: ProfileStatus.success, shellyCloudConnected: true));
