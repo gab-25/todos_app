@@ -23,6 +23,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   String? _editNameCtrl;
   String? _editAvatarCtrl;
 
+  String? _newPasswordCtrl;
+
   String? _shellyCloudEmailCtrl;
   String? _shellyCloudPasswordCtrl;
 
@@ -39,6 +41,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     _editAvatarCtrl = avatar;
   }
 
+  void onNewPasswordChanged(String value) {
+    _newPasswordCtrl = value;
+  }
+
   void onShellyCloudEmailChanged(String email) {
     _shellyCloudEmailCtrl = email;
   }
@@ -47,7 +53,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     _shellyCloudPasswordCtrl = password;
   }
 
-  Future<void> onSave() async {
+  Future<void> onSaveEditProfile() async {
     emit(state.copyWith(status: ProfileStatus.loading));
     await _authRepository.currentUser!.updateDisplayName(_editNameCtrl);
     // await _authRepository.currentUser!.updatePhotoURL(_editAvatarCtrl);
@@ -58,10 +64,22 @@ class ProfileCubit extends Cubit<ProfileState> {
     ));
   }
 
+  Future<void> onSaveChangePassword() async {
+    try {
+      emit(state.copyWith(status: ProfileStatus.loading));
+      await _authRepository.currentUser!.updatePassword(_newPasswordCtrl!);
+      emit(state.copyWith(status: ProfileStatus.success));
+    } catch (e) {
+      print(e);
+      emit(state.copyWith(status: ProfileStatus.error));
+    }
+  }
+
   Future<void> onShellyCloudSignIn() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      final jsonResponseToken = await _shellyCloudService.getAccessToken(_shellyCloudEmailCtrl!, _shellyCloudPasswordCtrl!);
+      final jsonResponseToken =
+          await _shellyCloudService.getAccessToken(_shellyCloudEmailCtrl!, _shellyCloudPasswordCtrl!);
       print('Shelly Cloud sign in success');
       await _dbRepository.saveShellyCloudResponseToken(jsonResponseToken, _authRepository.currentUser!.uid);
       emit(state.copyWith(status: ProfileStatus.success, shellyCloudConnected: true));

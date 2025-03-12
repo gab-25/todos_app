@@ -51,14 +51,20 @@ class ProfilePage extends StatelessWidget {
                   Text(state.email),
                   const SizedBox(height: 10),
                   FilledButton(
-                    onPressed: () {},
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (_) => BlocProvider.value(
+                        value: BlocProvider.of<ProfileCubit>(context),
+                        child: const ChangePasswordDialog(),
+                      ),
+                    ),
                     child: const Text('Change Password'),
                   ),
                   const SizedBox(height: 10),
                   FilledButton(
                     onPressed: () => {
-                      Navigator.of(context).pop(),
                       context.read<AppBloc>().add(const AppLogoutPressed()),
+                      Navigator.of(context).pop(),
                     },
                     child: const Text('Logout'),
                   ),
@@ -155,8 +161,70 @@ class EditProfileDialog extends StatelessWidget {
                       TextButton(
                         onPressed: state.status != ProfileStatus.loading
                             ? () async {
-                                await context.read<ProfileCubit>().onSave();
+                                await context.read<ProfileCubit>().onSaveEditProfile();
                                 context.read<AppBloc>().add(const AppUserUpdated());
+                                Navigator.of(context).pop();
+                              }
+                            : null,
+                        child: const Text('Save'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ChangePasswordDialog extends StatelessWidget {
+  const ChangePasswordDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state.status == ProfileStatus.success) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password changed')));
+          context.read<AppBloc>().add(const AppLogoutPressed());
+          Navigator.of(context).pop();
+        }
+        if (state.status == ProfileStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password change failed')));
+        }
+      },
+      child: SimpleDialog(
+        title: const Text('Change password', textAlign: TextAlign.center),
+        children: <Widget>[
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: <Widget>[
+                  Column(children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'New password',
+                      ),
+                      obscureText: true,
+                      onChanged: (value) => context.read<ProfileCubit>().onNewPasswordChanged(value),
+                    ),
+                  ]),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: state.status != ProfileStatus.loading ? () => Navigator.of(context).pop() : null,
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: state.status != ProfileStatus.loading
+                            ? () async {
+                                await context.read<ProfileCubit>().onSaveChangePassword();
                                 Navigator.of(context).pop();
                               }
                             : null,
