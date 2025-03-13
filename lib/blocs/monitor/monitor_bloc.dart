@@ -9,9 +9,9 @@ part 'monitor_state.dart';
 
 class MonitorBloc extends Bloc<MonitorEvent, MonitorState> {
   MonitorBloc(this._authRepository, this._dbRepository)
-      : super(MonitorState(settings: PowerSettings(maxValue: 3.3, limitValue: 3.0))) {
-    on<MonitorPowerChanged>(_onMonitorPowerChanged);
+      : super(const MonitorState()) {
     on<MonitorSettingsLoaded>(_onMonitorSettingsLoaded);
+    on<MonitorPowerChanged>(_onMonitorPowerChanged);
   }
 
   final AuthRepository _authRepository;
@@ -20,7 +20,11 @@ class MonitorBloc extends Bloc<MonitorEvent, MonitorState> {
   Future<void> _onMonitorSettingsLoaded(MonitorSettingsLoaded event, Emitter<MonitorState> emit) async {
     final userSettings = await _dbRepository.getSettings(_authRepository.currentUser!.uid);
     if (userSettings != null) {
-      emit(state.copyWith(settings: userSettings.power));
+      final settings = PowerSettings(
+        maxValue: (userSettings.power?.maxValue != null ? (userSettings.power!.maxValue! / 1000) : 0.0),
+        limitValue: (userSettings.power?.limitValue != null ? (userSettings.power!.limitValue! / 1000) : 0.0),
+      );
+      emit(state.copyWith(settings: settings));
     }
   }
 

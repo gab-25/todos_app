@@ -7,7 +7,7 @@ class MonitorState extends Equatable {
   final PowerSettings? settings;
 
   @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [value, settings];
 
   MonitorState copyWith({
     double? power,
