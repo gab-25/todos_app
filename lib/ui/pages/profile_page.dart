@@ -18,7 +18,8 @@ class ProfilePage extends StatelessWidget {
         title: const Text('Profile'),
       ),
       body: BlocProvider(
-        create: (context) => ProfileCubit(context.read<AuthRepository>(), context.read<DbRepository>(), context.read<ShellyCloudService>()),
+        create: (context) => ProfileCubit(
+            context.read<AuthRepository>(), context.read<DbRepository>(), context.read<ShellyCloudService>()),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Center(
@@ -71,41 +72,42 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 40),
                   Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Theme.of(context).colorScheme.inverseSurface),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Column(children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'Shelly Cloud',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).colorScheme.inverseSurface),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Shelly Cloud',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
                             ),
-                            const SizedBox(width: 10),
-                            state.shellyCloudConnected ? const Icon(Icons.check_circle) : const Icon(Icons.cancel),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        FilledButton(
-                          onPressed: state.shellyCloudConnected == false
-                              ? () => showDialog(
-                                    context: context,
-                                    builder: (_) => BlocProvider.value(
-                                      value: BlocProvider.of<ProfileCubit>(context),
-                                      child: const ShellyCloudConnectDialog(),
-                                    ),
-                                  )
-                              : null,
-                          child: const Text('Connect'),
-                        ),
-                      ])),
+                          ),
+                          const SizedBox(width: 10),
+                          state.shellyCloudConnected ? const Icon(Icons.check_circle) : const Icon(Icons.cancel),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      FilledButton(
+                        onPressed: state.shellyCloudConnected == false
+                            ? () => showDialog(
+                                  context: context,
+                                  builder: (_) => BlocProvider.value(
+                                    value: BlocProvider.of<ProfileCubit>(context),
+                                    child: const ShellyCloudConnectDialog(),
+                                  ),
+                                )
+                            : null,
+                        child: const Text('Connect'),
+                      ),
+                    ]),
+                  ),
                 ],
               ),
             ),

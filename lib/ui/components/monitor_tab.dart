@@ -12,7 +12,7 @@ class MonitorTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          MonitorBloc(context.read<AuthRepository>(), context.read<DbRepository>())..add(const MonitorPowerChanged()),
+          MonitorBloc(context.read<AuthRepository>(), context.read<DbRepository>())..add(const MonitorSettingsLoaded())..add(const MonitorPowerChanged()),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: BlocBuilder<MonitorBloc, MonitorState>(
@@ -24,25 +24,25 @@ class MonitorTab extends StatelessWidget {
                 axes: <RadialAxis>[
                   RadialAxis(
                     minimum: 0,
-                    maximum: 3.3,
+                    maximum: state.settings!.maxValue!,
                     ranges: <GaugeRange>[
                       GaugeRange(
                         startValue: 0,
-                        endValue: 3,
+                        endValue: state.settings!.limitValue!,
                         color: Colors.green,
                       ),
                       GaugeRange(
-                        startValue: 3,
-                        endValue: 3.3,
+                        startValue: state.settings!.limitValue!,
+                        endValue: state.settings!.maxValue!,
                         color: Colors.red,
                       ),
                     ],
                     pointers: <GaugePointer>[
-                      NeedlePointer(value: state.power),
+                      NeedlePointer(value: state.value),
                     ],
                     annotations: <GaugeAnnotation>[
                       GaugeAnnotation(
-                        widget: Text('${state.power} kW',
+                        widget: Text('${state.value} kW',
                             style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
