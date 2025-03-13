@@ -8,6 +8,6 @@ final class MonitorSettingsLoaded extends MonitorEvent {
   const MonitorSettingsLoaded();
 }
 
-final class MonitorPowerChanged extends MonitorEvent {
-  const MonitorPowerChanged();
+final class MonitorStatusChanged extends MonitorEvent {
+  const MonitorStatusChanged();
 }

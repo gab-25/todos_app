@@ -13,11 +13,11 @@ class MonitorTab extends StatelessWidget {
     return BlocProvider(
       create: (context) => MonitorBloc(context.read<AuthRepository>(), context.read<DbRepository>())
         ..add(const MonitorSettingsLoaded())
-        ..add(const MonitorPowerChanged()),
+        ..add(const MonitorStatusChanged()),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: BlocBuilder<MonitorBloc, MonitorState>(
-          builder: (context, state) => state.settings != null
+          builder: (context, state) => state.status == MonitorStatus.connected && state.settings != null
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -58,7 +58,9 @@ class MonitorTab extends StatelessWidget {
                     ),
                   ],
                 )
-              : const Center(child: CircularProgressIndicator()),
+              : state.status == MonitorStatus.disconnected
+                  ? const Center(child: Icon(Icons.signal_wifi_off, size: 60))
+                  : const Center(child: CircularProgressIndicator()),
         ),
       ),
     );

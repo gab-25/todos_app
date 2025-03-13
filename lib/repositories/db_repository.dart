@@ -21,9 +21,7 @@ class DbRepository {
 
   Stream<UserStates> getStates(String userId) {
     final userStates = _database.ref().child('states/$userId');
-    return userStates.onValue.where((event) => event.snapshot.value != null).map((event) {
-      return UserStates.fromJson(event.snapshot.value as Map<dynamic, dynamic>);
-    });
+    return userStates.onValue.map((event) => UserStates.fromJson(event.snapshot.value as Map<dynamic, dynamic>));
   }
 
   Future<UserStates?> getCurrentStates(String userId) async {

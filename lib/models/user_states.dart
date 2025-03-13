@@ -7,7 +7,7 @@ class UserStates {
   factory UserStates.fromJson(Map<dynamic, dynamic> json) {
     return UserStates(
       shellyCloudConnected: json['shelly_cloud_connected'] ?? false,
-      power: json['power'] ?? 0,
+      power: json['power'] ?? 0.0,
     );
   }
 }
