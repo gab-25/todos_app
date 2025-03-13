@@ -2,6 +2,7 @@ import 'package:energy_monitor_app/blocs/app/app_bloc.dart';
 import 'package:energy_monitor_app/cubits/profile/profile_cubit.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/repositories/db_repository.dart';
+import 'package:energy_monitor_app/services/shelly_cloud_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +18,7 @@ class ProfilePage extends StatelessWidget {
         title: const Text('Profile'),
       ),
       body: BlocProvider(
-        create: (context) => ProfileCubit(context.read<AuthRepository>(), context.read<DbRepository>()),
+        create: (context) => ProfileCubit(context.read<AuthRepository>(), context.read<DbRepository>(), context.read<ShellyCloudService>()),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Center(

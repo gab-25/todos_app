@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit(this._authRepository, this._dbRepository)
+  ProfileCubit(this._authRepository, this._dbRepository, this._shellyCloudService)
       : super(ProfileState(
           email: _authRepository.currentUser!.email!,
           name: _authRepository.currentUser!.displayName ?? '',
@@ -18,7 +18,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   final AuthRepository _authRepository;
   final DbRepository _dbRepository;
-  final ShellyCloudService _shellyCloudService = const ShellyCloudService();
+  final ShellyCloudService _shellyCloudService;
 
   String? _editNameCtrl;
   String? _editAvatarCtrl;
