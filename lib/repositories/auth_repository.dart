@@ -45,9 +45,7 @@ class AuthRepository {
 
   Future<bool> signOut() async {
     try {
-      await Future.wait([
-        _firebaseAuth.signOut(),
-      ]);
+      await _firebaseAuth.signOut();
       return true;
     } catch (e) {
       print(e);

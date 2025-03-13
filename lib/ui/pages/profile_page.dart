@@ -64,9 +64,9 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   FilledButton(
-                    onPressed: () => {
-                      context.read<AppBloc>().add(const AppLogoutPressed()),
-                      Navigator.of(context).pop(),
+                    onPressed: () {
+                      context.read<AppBloc>().add(const AppLogoutPressed());
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     child: const Text('Logout'),
                   ),
@@ -193,7 +193,7 @@ class ChangePasswordDialog extends StatelessWidget {
         if (state.status == ProfileStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password changed')));
           context.read<AppBloc>().add(const AppLogoutPressed());
-          Navigator.of(context).pop();
+          Navigator.of(context).popUntil((route) => route.isFirst);
         }
         if (state.status == ProfileStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password change failed')));
