@@ -1,3 +1,4 @@
+import 'package:energy_monitor_app/models/user_settings.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/repositories/db_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -7,12 +8,25 @@ part 'monitor_event.dart';
 part 'monitor_state.dart';
 
 class MonitorBloc extends Bloc<MonitorEvent, MonitorState> {
-  MonitorBloc(this._authRepository, this._dbRepository) : super(const MonitorState()) {
+  MonitorBloc(this._authRepository, this._dbRepository)
+      : super(const MonitorState()) {
+    on<MonitorSettingsLoaded>(_onMonitorSettingsLoaded);
     on<MonitorPowerChanged>(_onMonitorPowerChanged);
   }
 
   final AuthRepository _authRepository;
   final DbRepository _dbRepository;
+
+  Future<void> _onMonitorSettingsLoaded(MonitorSettingsLoaded event, Emitter<MonitorState> emit) async {
+    final userSettings = await _dbRepository.getSettings(_authRepository.currentUser!.uid);
+    if (userSettings != null) {
+      final settings = PowerSettings(
+        maxValue: (userSettings.power?.maxValue != null ? (userSettings.power!.maxValue! / 1000) : 0.0),
+        limitValue: (userSettings.power?.limitValue != null ? (userSettings.power!.limitValue! / 1000) : 0.0),
+      );
+      emit(state.copyWith(settings: settings));
+    }
+  }
 
   Future<void> _onMonitorPowerChanged(MonitorPowerChanged event, Emitter<MonitorState> emit) {
     return emit.onEach(

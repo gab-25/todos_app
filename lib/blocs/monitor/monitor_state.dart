@@ -1,16 +1,21 @@
 part of 'monitor_bloc.dart';
 
 class MonitorState extends Equatable {
-  const MonitorState({this.power = 0});
+  const MonitorState({this.value = 0, this.settings});
 
-  final double power;
+  final double value;
+  final PowerSettings? settings;
 
   @override
-  List<Object?> get props => [power];
+  List<Object?> get props => [value, settings];
 
-  MonitorState copyWith({double? power}) {
+  MonitorState copyWith({
+    double? power,
+    PowerSettings? settings,
+  }) {
     return MonitorState(
-      power: power ?? this.power,
+      value: power ?? value,
+      settings: settings ?? this.settings,
     );
   }
 }

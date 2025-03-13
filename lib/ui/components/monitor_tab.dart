@@ -11,51 +11,54 @@ class MonitorTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          MonitorBloc(context.read<AuthRepository>(), context.read<DbRepository>())..add(const MonitorPowerChanged()),
+      create: (context) => MonitorBloc(context.read<AuthRepository>(), context.read<DbRepository>())
+        ..add(const MonitorSettingsLoaded())
+        ..add(const MonitorPowerChanged()),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: BlocBuilder<MonitorBloc, MonitorState>(
-          builder: (context, state) => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Power', style: TextStyle(fontSize: 18)),
-              SfRadialGauge(
-                axes: <RadialAxis>[
-                  RadialAxis(
-                    minimum: 0,
-                    maximum: 3.3,
-                    ranges: <GaugeRange>[
-                      GaugeRange(
-                        startValue: 0,
-                        endValue: 3,
-                        color: Colors.green,
-                      ),
-                      GaugeRange(
-                        startValue: 3,
-                        endValue: 3.3,
-                        color: Colors.red,
-                      ),
-                    ],
-                    pointers: <GaugePointer>[
-                      NeedlePointer(value: state.power),
-                    ],
-                    annotations: <GaugeAnnotation>[
-                      GaugeAnnotation(
-                        widget: Text('${state.power} kW',
-                            style: const TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        angle: 90,
-                        positionFactor: 0.5,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
+          builder: (context, state) => state.settings != null
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Power', style: TextStyle(fontSize: 18)),
+                    SfRadialGauge(
+                      axes: <RadialAxis>[
+                        RadialAxis(
+                          minimum: 0,
+                          maximum: state.settings!.maxValue!,
+                          ranges: <GaugeRange>[
+                            GaugeRange(
+                              startValue: 0,
+                              endValue: state.settings!.limitValue!,
+                              color: Colors.green,
+                            ),
+                            GaugeRange(
+                              startValue: state.settings!.limitValue!,
+                              endValue: state.settings!.maxValue!,
+                              color: Colors.red,
+                            ),
+                          ],
+                          pointers: <GaugePointer>[
+                            NeedlePointer(value: state.value),
+                          ],
+                          annotations: <GaugeAnnotation>[
+                            GaugeAnnotation(
+                              widget: Text('${state.value} kW',
+                                  style: const TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                              angle: 90,
+                              positionFactor: 0.5,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : const Center(child: CircularProgressIndicator()),
         ),
       ),
     );
