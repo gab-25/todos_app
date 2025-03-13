@@ -18,10 +18,42 @@ class SettingsCubit extends Cubit<SettingsState> {
     final userSettings = await _dbRepository.getSettings(_authRepository.currentUser!.uid);
     if (userSettings != null) {
       final power = PowerSettings(
-        maxValue: (userSettings.power?.maxValue != null ? (userSettings.power!.maxValue! / 1000) : 0.0),
         limitValue: (userSettings.power?.limitValue != null ? (userSettings.power!.limitValue! / 1000) : 0.0),
+        maxValue: (userSettings.power?.maxValue != null ? (userSettings.power!.maxValue! / 1000) : 0.0),
       );
       emit(state.copyWith(power: power));
+    }
+  }
+
+  void onPowerLimitValueChanged(String value) {
+    final power = PowerSettings(
+      maxValue: state.power!.maxValue,
+      limitValue: double.tryParse(value),
+    );
+    emit(state.copyWith(status: SettingsStatus.modified, power: power));
+  }
+
+  void onPowerMaxValueChanged(String value) {
+    final power = PowerSettings(
+      maxValue: double.tryParse(value),
+      limitValue: state.power!.limitValue,
+    );
+    emit(state.copyWith(status: SettingsStatus.modified, power: power));
+  }
+
+  Future<void> onSave() async {
+    final userId = _authRepository.currentUser!.uid;
+    UserSettings settings = (await _dbRepository.getSettings(userId)) ?? UserSettings();
+    settings.power = PowerSettings(
+      limitValue: state.power!.limitValue! * 1000,
+      maxValue: state.power!.maxValue! * 1000,
+    );
+    try {
+      await _dbRepository.saveSettings(settings, userId);
+      emit(state.copyWith(status: SettingsStatus.success));
+    } catch (e) {
+      print(e);
+      emit(state.copyWith(status: SettingsStatus.error));
     }
   }
 }

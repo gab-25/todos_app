@@ -8,10 +8,9 @@ part 'monitor_event.dart';
 part 'monitor_state.dart';
 
 class MonitorBloc extends Bloc<MonitorEvent, MonitorState> {
-  MonitorBloc(this._authRepository, this._dbRepository)
-      : super(const MonitorState()) {
+  MonitorBloc(this._authRepository, this._dbRepository) : super(const MonitorState()) {
     on<MonitorSettingsLoaded>(_onMonitorSettingsLoaded);
-    on<MonitorPowerChanged>(_onMonitorPowerChanged);
+    on<MonitorStatusChanged>(_onMonitorStatusChanged);
   }
 
   final AuthRepository _authRepository;
@@ -28,12 +27,13 @@ class MonitorBloc extends Bloc<MonitorEvent, MonitorState> {
     }
   }
 
-  Future<void> _onMonitorPowerChanged(MonitorPowerChanged event, Emitter<MonitorState> emit) {
+  Future<void> _onMonitorStatusChanged(MonitorStatusChanged event, Emitter<MonitorState> emit) {
     return emit.onEach(
       _dbRepository.getStates(_authRepository.currentUser!.uid),
       onData: (states) {
-        final power = double.parse((states.power / 1000).toStringAsFixed(2));
-        emit(state.copyWith(power: power));
+        final status = states.shellyCloudConnected ? MonitorStatus.connected : MonitorStatus.disconnected;
+        final value = double.parse((states.power / 1000).toStringAsFixed(2));
+        emit(state.copyWith(status: status, value: value));
       },
       onError: addError,
     );
