@@ -16,14 +16,30 @@ class ShellyCloudSettings {
   }
 }
 
+class PowerSettings {
+  PowerSettings({this.maxValue, this.limitValue});
+
+  final double? maxValue;
+  final double? limitValue;
+
+  factory PowerSettings.fromJson(Map<String, dynamic> json) {
+    return PowerSettings(
+      maxValue: (json['max_value'] as num?)?.toDouble(),
+      limitValue: (json['limit_value'] as num?)?.toDouble(),
+    );
+  }
+}
+
 class UserSettings {
-  UserSettings({this.shellyCloud});
+  UserSettings({this.shellyCloud, this.power});
 
   ShellyCloudSettings? shellyCloud;
+  PowerSettings? power;
 
   factory UserSettings.fromJson(Map<String, dynamic> json) {
     return UserSettings(
       shellyCloud: json['shelly_cloud'] != null ? ShellyCloudSettings.fromJson(json['shelly_cloud']) : null,
+      power: json['power'] != null ? PowerSettings.fromJson(json['power']) : null,
     );
   }
 }
