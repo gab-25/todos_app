@@ -94,6 +94,8 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 10),
+                      Text("Device ID: ${state.shellyCloudDeviceId ?? 'unknown'}"),
+                      const SizedBox(height: 10),
                       FilledButton(
                         onPressed: state.shellyCloudConnected == false
                             ? () => showDialog(
@@ -267,21 +269,25 @@ class ShellyCloudConnectDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: <Widget>[
-                  Column(children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
+                  AutofillGroup(
+                    child: Column(children: [
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                        ),
+                        autofillHints: const [AutofillHints.email],
+                        onChanged: (value) => context.read<ProfileCubit>().onShellyCloudEmailChanged(value),
                       ),
-                      onChanged: (value) => context.read<ProfileCubit>().onShellyCloudEmailChanged(value),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
+                        obscureText: true,
+                        autofillHints: const [AutofillHints.password],
+                        onChanged: (value) => context.read<ProfileCubit>().onShellyCloudPasswordChanged(value),
                       ),
-                      obscureText: true,
-                      onChanged: (value) => context.read<ProfileCubit>().onShellyCloudPasswordChanged(value),
-                    ),
-                  ]),
+                    ]),
+                  ),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

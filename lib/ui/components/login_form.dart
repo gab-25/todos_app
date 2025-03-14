@@ -13,37 +13,41 @@ class LoginForm extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login failed')));
         }
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Text('Login', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 30),
-          TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Email',
+      child: AutofillGroup(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text('Login', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 30),
+            TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Email',
+              ),
+              keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
+              onChanged: (value) => context.read<LoginCubit>().onEmailChanged(value),
             ),
-            keyboardType: TextInputType.emailAddress,
-            onChanged: (value) => context.read<LoginCubit>().onEmailChanged(value),
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Password',
+            const SizedBox(height: 20),
+            TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Password',
+              ),
+              obscureText: true,
+              autofillHints: const [AutofillHints.password],
+              onChanged: (value) => context.read<LoginCubit>().onPasswordChanged(value),
             ),
-            obscureText: true,
-            onChanged: (value) => context.read<LoginCubit>().onPasswordChanged(value),
-          ),
-          const SizedBox(height: 30),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () => context.read<LoginCubit>().onLogin(),
-              child: const Text('Login'),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () => context.read<LoginCubit>().onLogin(),
+                child: const Text('Login'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

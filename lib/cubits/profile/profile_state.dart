@@ -9,6 +9,7 @@ class ProfileState extends Equatable {
     required this.avatar,
     this.status = ProfileStatus.initial,
     this.shellyCloudConnected = false,
+    this.shellyCloudDeviceId,
   });
 
   final String email;
@@ -16,9 +17,10 @@ class ProfileState extends Equatable {
   final String avatar;
   final ProfileStatus status;
   final bool shellyCloudConnected;
+  final String? shellyCloudDeviceId;
 
   @override
-  List<Object?> get props => [name, avatar, status];
+  List<Object?> get props => [email, name, avatar, status, shellyCloudConnected, shellyCloudDeviceId];
 
   ProfileState copyWith({
     String? email,
@@ -26,6 +28,7 @@ class ProfileState extends Equatable {
     String? avatar,
     ProfileStatus? status,
     bool? shellyCloudConnected,
+    String? shellyCloudDeviceId,
   }) {
     return ProfileState(
       email: email ?? this.email,
@@ -33,6 +36,7 @@ class ProfileState extends Equatable {
       avatar: avatar ?? this.avatar,
       status: status ?? this.status,
       shellyCloudConnected: shellyCloudConnected ?? this.shellyCloudConnected,
+      shellyCloudDeviceId: shellyCloudDeviceId ?? this.shellyCloudDeviceId,
     );
   }
 }

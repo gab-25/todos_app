@@ -11,3 +11,7 @@ final class MonitorSettingsLoaded extends MonitorEvent {
 final class MonitorStatusChanged extends MonitorEvent {
   const MonitorStatusChanged();
 }
+
+final class MonitorConsumptionUpdated extends MonitorEvent {
+  const MonitorConsumptionUpdated();
+}
