@@ -94,6 +94,8 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 10),
+                      Text("Device ID: ${state.shellyCloudDeviceId ?? 'unknown'}"),
+                      const SizedBox(height: 10),
                       FilledButton(
                         onPressed: state.shellyCloudConnected == false
                             ? () => showDialog(

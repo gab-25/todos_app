@@ -30,7 +30,8 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void _init() async {
     final userStates = await _dbRepository.getCurrentStates(_authRepository.currentUser!.uid);
-    emit(state.copyWith(shellyCloudConnected: userStates?.shellyCloudConnected ?? false));
+    final userSettings = await _dbRepository.getSettings(_authRepository.currentUser!.uid);
+    emit(state.copyWith(shellyCloudConnected: userStates?.shellyCloudConnected ?? false, shellyCloudDeviceId: userSettings?.shellyCloud?.deviceId));
   }
 
   void onEditNameChanged(String name) {
