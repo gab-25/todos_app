@@ -1,6 +1,7 @@
 import 'package:energy_monitor_app/blocs/monitor/monitor_bloc.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:energy_monitor_app/repositories/db_repository.dart';
+import 'package:energy_monitor_app/services/shelly_cloud_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -11,9 +12,10 @@ class MonitorTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MonitorBloc(context.read<AuthRepository>(), context.read<DbRepository>())
+      create: (context) => MonitorBloc(context.read<AuthRepository>(), context.read<DbRepository>(), context.read<ShellyCloudService>())
         ..add(const MonitorSettingsLoaded())
-        ..add(const MonitorStatusChanged()),
+        ..add(const MonitorStatusChanged())
+        ..add(const MonitorConsumptionUpdated()),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: BlocBuilder<MonitorBloc, MonitorState>(
@@ -55,6 +57,52 @@ class MonitorTab extends StatelessWidget {
                           ],
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Theme.of(context).colorScheme.inverseSurface),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(children: [
+                        const Text(
+                          'Consumption',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(Icons.electric_bolt),
+                                SizedBox(width: 5),
+                                Text('Today'),
+                              ],
+                            ),
+                            Text('${state.consumption?.today ?? 0.0} kWh'),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(Icons.electric_bolt),
+                                SizedBox(width: 5),
+                                Text('This month'),
+                              ],
+                            ),
+                            Text('${state.consumption?.thisMonth ?? 0.0} kWh'),
+                          ],
+                        ),
+                      ]),
                     ),
                   ],
                 )
