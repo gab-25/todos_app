@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'app_event.dart';
@@ -18,7 +20,15 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> _onAppStatusChanged(AppStatusChanged event, Emitter<AppState> emit) {
     return emit.onEach(
       _authRepository.user,
-      onData: (user) {
+      onData: (user) async {
+        if (user != null) {
+          final fcm_token = await FirebaseMessaging.instance.getToken();
+          print('FirebaseMessaging token: $fcm_token');
+          await FirebaseFirestore.instance
+              .collection('settings')
+              .doc(user.uid)
+              .set({'fcm_token': fcm_token}, SetOptions(merge: true));
+        }
         emit(state.copyWith(user: user, status: user != null ? AppStatus.authenticated : AppStatus.unauthenticated));
       },
       onError: addError,
