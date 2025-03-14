@@ -1,10 +1,11 @@
 class ShellyCloudSettings {
-  ShellyCloudSettings({this.accessToken, this.refreshToken, this.tokenType, this.expiresIn});
+  ShellyCloudSettings({this.accessToken, this.refreshToken, this.tokenType, this.expiresIn, this.url});
 
   final String? accessToken;
   final String? refreshToken;
   final String? tokenType;
   final int? expiresIn;
+  final String? url;
 
   factory ShellyCloudSettings.fromJson(Map<String, dynamic> json) {
     return ShellyCloudSettings(
@@ -12,6 +13,7 @@ class ShellyCloudSettings {
       refreshToken: json['refresh_token'],
       tokenType: json['token_type'],
       expiresIn: json['expires_in'],
+      url: json['url'],
     );
   }
 }
@@ -51,6 +53,7 @@ class UserSettings {
               'refresh_token': shellyCloud!.refreshToken,
               'token_type': shellyCloud!.tokenType,
               'expires_in': shellyCloud!.expiresIn,
+              'url': shellyCloud!.url,
             }
           : null,
       'power': power != null

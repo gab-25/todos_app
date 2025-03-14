@@ -30,7 +30,33 @@ class ShellyCloudService {
     if (jsonResponseToken['isok'] == false) {
       throw Exception(jsonResponseToken['errors']);
     }
+    jsonResponseToken['url'] = userData['user_api_url'];
 
     return jsonResponseToken;
+  }
+
+  Future<Map<String, dynamic>> getStatisticsData(
+    String url,
+    String accessToken,
+    DateTime dateFrom,
+    DateTime? dateTo,
+  ) async {
+    final String dateRange = dateTo == null ? 'day' : 'custom';
+    url += "/v2/statistics/power-consumption/overall?date_range=$dateRange&date_from=${Uri.encodeComponent(dateFrom.toIso8601String().replaceFirst('T', ' '))}";
+    if (dateTo != null) {
+      url += '&date_to=${Uri.encodeComponent(dateTo.toIso8601String().replaceFirst('T', ' '))}';
+    }
+    final http.Response response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+    final Map<String, dynamic> jsonResponse = json.decode(response.body);
+    if (jsonResponse['isok'] == false) {
+      throw Exception(jsonResponse['errors']);
+    }
+
+    return jsonResponse;
   }
 }
