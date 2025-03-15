@@ -52,7 +52,14 @@ class AppView extends StatelessWidget {
           if (state.status == AppStatus.authenticated) {
             return const LandingPage(tabSelected: AppTabs.monitor);
           }
-          return const LoginPage();
+          if (state.status == AppStatus.unauthenticated) {
+            return const LoginPage();
+          }
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         },
       ),
       routes: {
