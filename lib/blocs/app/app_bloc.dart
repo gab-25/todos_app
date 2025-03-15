@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:energy_monitor_app/repositories/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +27,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           final fcmToken = await FirebaseMessaging.instance.getToken();
           print('FirebaseMessaging token: $fcmToken');
           if (kReleaseMode) {
+            //TODO: check if the token is already saved
             await FirebaseFirestore.instance
                 .collection('settings')
                 .doc(user.uid)
