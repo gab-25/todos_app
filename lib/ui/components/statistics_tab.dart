@@ -36,8 +36,10 @@ class StatisticsTab extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 40),
+            const Text('Total Energy Consumption: 0.0 kWh'),
+            const SizedBox(height: 40),
             AspectRatio(
-              aspectRatio: 0.8,
+              aspectRatio: 1,
               child: BarChart(
                 BarChartData(),
               ),
