@@ -1,4 +1,4 @@
-import 'package:energy_monitor_app/cubits/login/login_cubit.dart';
+import 'package:todos_app/cubits/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

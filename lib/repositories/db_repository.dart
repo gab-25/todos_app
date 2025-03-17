@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:energy_monitor_app/models/user_settings.dart';
+import 'package:todos_app/models/user_settings.dart';
 
 class DbRepository {
   DbRepository()

@@ -1,6 +1,6 @@
-import 'package:energy_monitor_app/models/user_settings.dart';
-import 'package:energy_monitor_app/repositories/auth_repository.dart';
-import 'package:energy_monitor_app/repositories/db_repository.dart';
+import 'package:todos_app/models/user_settings.dart';
+import 'package:todos_app/repositories/auth_repository.dart';
+import 'package:todos_app/repositories/db_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,6 +1,6 @@
-import 'package:energy_monitor_app/cubits/settings/settings_cubit.dart';
-import 'package:energy_monitor_app/repositories/auth_repository.dart';
-import 'package:energy_monitor_app/repositories/db_repository.dart';
+import 'package:todos_app/cubits/settings/settings_cubit.dart';
+import 'package:todos_app/repositories/auth_repository.dart';
+import 'package:todos_app/repositories/db_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

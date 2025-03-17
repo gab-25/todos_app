@@ -1,6 +1,6 @@
-import 'package:energy_monitor_app/ui/components/monitor_tab.dart';
-import 'package:energy_monitor_app/ui/components/settings_tab.dart';
-import 'package:energy_monitor_app/ui/components/statistics_tab.dart';
+import 'package:todos_app/ui/components/monitor_tab.dart';
+import 'package:todos_app/ui/components/settings_tab.dart';
+import 'package:todos_app/ui/components/statistics_tab.dart';
 import 'package:flutter/material.dart';
 
 enum AppTabs {
