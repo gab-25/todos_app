@@ -41,7 +41,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Energy Monitor',
+      title: 'Todos App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.yellow,
