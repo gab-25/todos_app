@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:todos_app/blocs/app/app_bloc.dart';
-import 'package:todos_app/repositories/auth_repository.dart';
+import 'package:todos_app/repositories/user_repository.dart';
 import 'package:todos_app/repositories/todo_repository.dart';
 import 'package:todos_app/services/db_service.dart';
 import 'package:todos_app/ui/pages/todo_page.dart';
@@ -23,11 +23,11 @@ class App extends StatelessWidget {
       ],
       child: MultiRepositoryProvider(
         providers: [
-          RepositoryProvider(create: (context) => AuthRepository(context.read<DbService>())),
+          RepositoryProvider(create: (context) => UserRepository(context.read<DbService>())),
           RepositoryProvider(create: (context) => TodoRepository(context.read<DbService>())),
         ],
         child: BlocProvider(
-          create: (context) => AppBloc(context.read<AuthRepository>()),
+          create: (context) => AppBloc(),
           child: const AppView(),
         ),
       ),

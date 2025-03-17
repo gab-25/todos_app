@@ -1,5 +1,4 @@
 import 'package:todos_app/models/user.dart';
-import 'package:todos_app/repositories/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,38 +6,15 @@ part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  AppBloc(this._authRepository) : super(const AppState()) {
-    on<AppLoginPressed>(_onLoginPressed);
-    on<AppLogoutPressed>(_onLogoutPressed);
-    on<AppUserUpdated>(_onAppUserUpdated);
+  AppBloc() : super(const AppState()) {
+    on<AppUserChanged>(_onAppUserChanged);
   }
 
-  final AuthRepository _authRepository;
-
-  Future<void> _onLoginPressed(AppLoginPressed event, Emitter<AppState> emit) async {
-    final result = await _authRepository.signIn(
-      email: event.email,
-      password: event.password,
-    );
-    if (result) {
-      emit(state.copyWith(
-        user: _authRepository.currentUser,
-        status: AppStatus.authenticated,
-      ));
+  void _onAppUserChanged(AppUserChanged event, Emitter<AppState> emit) {
+    if (event.user == null) {
+      emit(state.copyWith(user: null, status: AppStatus.unauthenticated));
     } else {
-      emit(state.copyWith(status: AppStatus.unauthenticated));
+      emit(state.copyWith(user: event.user, status: AppStatus.authenticated));
     }
-  }
-
-  void _onLogoutPressed(AppLogoutPressed event, Emitter<AppState> emit) async {
-    await _authRepository.signOut();
-    emit(state.copyWith(
-      user: null,
-      status: AppStatus.unauthenticated,
-    ));
-  }
-
-  void _onAppUserUpdated(AppUserUpdated event, Emitter<AppState> emit) {
-    emit(state.copyWith(user: _authRepository.currentUser));
   }
 }

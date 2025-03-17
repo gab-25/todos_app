@@ -13,8 +13,6 @@ class User {
   final String password;
   final String? avatar;
 
-  static String table = "users";
-
   factory User.fromMap(Map<String, dynamic> json) {
     return User(
       id: json["id"],

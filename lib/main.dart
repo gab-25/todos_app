@@ -13,10 +13,10 @@ Future<void> main() async {
         'CREATE TABLE todos(id INTEGER PRIMARY KEY, title TEXT, description TEXT, completed INTEGER)',
       );
       await db.execute(
-        'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, email TEXT, password TEXT)',
+        'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, email TEXT, password TEXT, avatar TEXT)',
       );
 
-      final initUser = User(name: 'Gabriele Sorci', email: 'gsorci@eagleprojects.it', password: 'password');
+      final initUser = User(id: 1, name: 'Gabriele Sorci', email: 'gsorci@eagleprojects.it', password: 'password');
       await db.insert('users', initUser.toMap());
     },
     version: 1,
