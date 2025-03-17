@@ -1,37 +1,22 @@
 import 'package:todos_app/repositories/auth_repository.dart';
-import 'package:todos_app/repositories/db_repository.dart';
-import 'package:todos_app/services/shelly_cloud_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit(this._authRepository, this._dbRepository, this._shellyCloudService)
+  ProfileCubit(this._authRepository)
       : super(ProfileState(
-          email: _authRepository.currentUser!.email!,
-          name: _authRepository.currentUser!.displayName ?? '',
-          avatar: _authRepository.currentUser!.photoURL ?? '',
-        )) {
-    _init();
-  }
+          email: _authRepository.currentUser!.email,
+          name: _authRepository.currentUser!.name,
+          avatar: _authRepository.currentUser!.avatar,
+        ));
 
   final AuthRepository _authRepository;
-  final DbRepository _dbRepository;
-  final ShellyCloudService _shellyCloudService;
 
   String? _editNameCtrl;
   String? _editAvatarCtrl;
-
   String? _newPasswordCtrl;
-
-  String? _shellyCloudEmailCtrl;
-  String? _shellyCloudPasswordCtrl;
-
-  void _init() async {
-    final userSettings = await _dbRepository.getSettings(_authRepository.currentUser!.uid);
-    emit(state.copyWith(shellyCloudConnected: userStates?.shellyCloudConnected ?? false, shellyCloudDeviceId: userSettings?.shellyCloud?.deviceId));
-  }
 
   void onEditNameChanged(String name) {
     _editNameCtrl = name;
@@ -45,47 +30,34 @@ class ProfileCubit extends Cubit<ProfileState> {
     _newPasswordCtrl = value;
   }
 
-  void onShellyCloudEmailChanged(String email) {
-    _shellyCloudEmailCtrl = email;
-  }
-
-  void onShellyCloudPasswordChanged(String password) {
-    _shellyCloudPasswordCtrl = password;
-  }
-
   Future<void> onSaveEditProfile() async {
-    emit(state.copyWith(status: ProfileStatus.loading));
-    await _authRepository.currentUser!.updateDisplayName(_editNameCtrl);
-    // await _authRepository.currentUser!.updatePhotoURL(_editAvatarCtrl);
-    emit(state.copyWith(
-      status: ProfileStatus.success,
-      name: _authRepository.currentUser!.displayName!,
-      // avatar: _authRepository.currentUser!.photoURL!,
-    ));
-  }
-
-  Future<void> onSaveChangePassword() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      await _authRepository.currentUser!.updatePassword(_newPasswordCtrl!);
-      emit(state.copyWith(status: ProfileStatus.success));
+      await _authRepository.updateUser(_authRepository.currentUser!.copyWith(
+        name: _editNameCtrl,
+        avatar: _editAvatarCtrl,
+      ));
+      emit(state.copyWith(
+        status: ProfileStatus.success,
+        name: _authRepository.currentUser!.name,
+        avatar: _authRepository.currentUser!.avatar,
+      ));
     } catch (e) {
       print(e);
       emit(state.copyWith(status: ProfileStatus.error));
     }
   }
 
-  Future<void> onShellyCloudSignIn() async {
+  Future<void> onSaveChangePassword() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      final jsonResponseToken =
-          await _shellyCloudService.getAccessToken(_shellyCloudEmailCtrl!, _shellyCloudPasswordCtrl!);
-      print('Shelly Cloud sign in success');
-      await _dbRepository.saveShellyCloudResponseToken(jsonResponseToken, _authRepository.currentUser!.uid);
-      emit(state.copyWith(status: ProfileStatus.success, shellyCloudConnected: true));
+      await _authRepository.updateUser(_authRepository.currentUser!.copyWith(
+        password: _newPasswordCtrl,
+      ));
+      emit(state.copyWith(status: ProfileStatus.success));
     } catch (e) {
       print(e);
-      emit(state.copyWith(status: ProfileStatus.error, shellyCloudConnected: false));
+      emit(state.copyWith(status: ProfileStatus.error));
     }
   }
 }

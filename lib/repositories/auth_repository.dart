@@ -1,55 +1,36 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:todos_app/models/user.dart';
+import 'package:todos_app/services/db_service.dart';
 
 class AuthRepository {
-  AuthRepository() : _firebaseAuth = FirebaseAuth.instance;
+  AuthRepository(this._dbService);
 
-  final FirebaseAuth _firebaseAuth;
+  final DbService _dbService;
 
-  Stream<User?> get user {
-    return _firebaseAuth.authStateChanges().map((firebaseUser) => firebaseUser);
-  }
+  User? _user;
 
   User? get currentUser {
-    return _firebaseAuth.currentUser;
-  }
-
-  Future<bool> signUp({required String email, required String password}) async {
-    try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
-    }
+    return _user;
   }
 
   Future<bool> signIn({
     required String email,
     required String password,
   }) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    final users = await _dbService.getEntities<User>();
+    final user = users.firstWhere((user) => user.email == email && user.password == password);
+    if (user.id != null) {
+      _user = user;
       return true;
-    } catch (e) {
-      print(e);
-      return false;
     }
+    return false;
   }
 
-  Future<bool> signOut() async {
-    try {
-      await _firebaseAuth.signOut();
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
-    }
+  Future<void> signOut() async {
+    _user = null;
+  }
+
+  Future<void> updateUser(User user) async {
+    return _dbService.saveEntity<User>(user);
   }
 }

@@ -6,7 +6,7 @@ class ProfileState extends Equatable {
   const ProfileState({
     required this.email,
     required this.name,
-    required this.avatar,
+    this.avatar,
     this.status = ProfileStatus.initial,
     this.shellyCloudConnected = false,
     this.shellyCloudDeviceId,
@@ -14,7 +14,7 @@ class ProfileState extends Equatable {
 
   final String email;
   final String name;
-  final String avatar;
+  final String? avatar;
   final ProfileStatus status;
   final bool shellyCloudConnected;
   final String? shellyCloudDeviceId;

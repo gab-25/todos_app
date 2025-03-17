@@ -1,13 +1,26 @@
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:todos_app/models/user.dart';
 import 'package:todos_app/ui/app.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  final database = await openDatabase(
+    join(await getDatabasesPath(), 'todos_app.db'),
+    onCreate: (db, version) async {
+      await db.execute(
+        'CREATE TABLE todos(id INTEGER PRIMARY KEY, title TEXT, description TEXT, completed INTEGER)',
+      );
+      await db.execute(
+        'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, email TEXT, password TEXT)',
+      );
+
+      final initUser = User(name: 'Gabriele Sorci', email: 'gsorci@eagleprojects.it', password: 'password');
+      await db.insert('users', initUser.toMap());
+    },
+    version: 1,
   );
 
-  runApp(const App());
+  runApp(App(db: database));
 }
