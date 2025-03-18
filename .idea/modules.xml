@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/energy_monitor_app.iml" filepath="$PROJECT_DIR$/energy_monitor_app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/energy_monitor_app_android.iml" filepath="$PROJECT_DIR$/android/energy_monitor_app_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/todos_app.iml" filepath="$PROJECT_DIR$/todos_app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/todos_app_android.iml" filepath="$PROJECT_DIR$/android/todos_app_android.iml" />
     </modules>
   </component>
 </project>

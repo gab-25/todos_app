@@ -1,16 +1,26 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:energy_monitor_app/ui/app.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:todos_app/models/user.dart';
+import 'package:todos_app/ui/app.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await FirebaseMessaging.instance.requestPermission();
+  final database = await openDatabase(
+    join(await getDatabasesPath(), 'todos_app.db'),
+    onCreate: (db, version) async {
+      await db.execute(
+        'CREATE TABLE todos(id INTEGER PRIMARY KEY, title TEXT, description TEXT, completed INTEGER)',
+      );
+      await db.execute(
+        'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, email TEXT, password TEXT, avatar TEXT)',
+      );
 
-  runApp(const App());
+      final initUser = User(id: 1, name: 'Gabriele Sorci', email: 'gsorci@eagleprojects.it', password: 'password');
+      await db.insert('users', initUser.toMap());
+    },
+    version: 1,
+  );
+
+  runApp(App(db: database));
 }
