@@ -1,4 +1,4 @@
-import 'package:todos_app/cubits/auth/auth_cubit.dart';
+import 'package:todos_app/cubits/login/login_cubit.dart';
 import 'package:todos_app/repositories/user_repository.dart';
 import 'package:todos_app/ui/components/login_form.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class LoginPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(40),
           child: BlocProvider(
-            create: (context) => AuthCubit(context.read<UserRepository>()),
+            create: (context) => LoginCubit(context.read<UserRepository>()),
             child: const LoginForm(),
           ),
         ),

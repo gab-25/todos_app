@@ -1,4 +1,4 @@
-import 'package:todos_app/cubits/auth/auth_cubit.dart';
+import 'package:todos_app/cubits/login/login_cubit.dart';
 import 'package:todos_app/cubits/profile/profile_cubit.dart';
 import 'package:todos_app/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class ProfilePage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => ProfileCubit(context.read<UserRepository>())),
-          BlocProvider(create: (context) => AuthCubit(context.read<UserRepository>())),
+          BlocProvider(create: (context) => LoginCubit(context.read<UserRepository>())),
         ],
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -58,7 +58,7 @@ class ProfilePage extends StatelessWidget {
                       builder: (_) => MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: BlocProvider.of<ProfileCubit>(context)),
-                          BlocProvider.value(value: BlocProvider.of<AuthCubit>(context)),
+                          BlocProvider.value(value: BlocProvider.of<LoginCubit>(context)),
                         ],
                         child: const ChangePasswordDialog(),
                       ),
@@ -68,7 +68,7 @@ class ProfilePage extends StatelessWidget {
                   const SizedBox(height: 10),
                   FilledButton(
                     onPressed: () {
-                      context.read<AuthCubit>().onLogout();
+                      context.read<LoginCubit>().onLogout();
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     child: const Text('Logout'),
@@ -159,7 +159,7 @@ class ChangePasswordDialog extends StatelessWidget {
       listener: (context, state) {
         if (state.status == ProfileStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password changed')));
-          context.read<AuthCubit>().onLogout();
+          context.read<LoginCubit>().onLogout();
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
         if (state.status == ProfileStatus.error) {

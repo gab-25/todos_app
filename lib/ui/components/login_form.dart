@@ -1,4 +1,4 @@
-import 'package:todos_app/cubits/auth/auth_cubit.dart';
+import 'package:todos_app/cubits/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,17 +7,17 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.success) {
+        if (state.status == LoginStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login successful')));
         }
-        if (state.status == AuthStatus.error) {
+        if (state.status == LoginStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login failed')));
         }
       },
       child: AutofillGroup(
-        child: BlocBuilder<AuthCubit, AuthState>(
+        child: BlocBuilder<LoginCubit, LoginState>(
           builder: (context, state) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -30,7 +30,7 @@ class LoginForm extends StatelessWidget {
                 ),
                 keyboardType: TextInputType.emailAddress,
                 autofillHints: const [AutofillHints.email],
-                onChanged: (value) => context.read<AuthCubit>().onEmailChanged(value),
+                onChanged: (value) => context.read<LoginCubit>().onEmailChanged(value),
               ),
               const SizedBox(height: 20),
               TextField(
@@ -40,13 +40,13 @@ class LoginForm extends StatelessWidget {
                 ),
                 obscureText: true,
                 autofillHints: const [AutofillHints.password],
-                onChanged: (value) => context.read<AuthCubit>().onPasswordChanged(value),
+                onChanged: (value) => context.read<LoginCubit>().onPasswordChanged(value),
               ),
               const SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () => context.read<AuthCubit>().onLogin(),
+                  onPressed: state.isValid ? () => context.read<LoginCubit>().onLogin() : null,
                   child: const Text('Login'),
                 ),
               ),
