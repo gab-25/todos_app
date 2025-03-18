@@ -1,4 +1,3 @@
-import 'package:todos_app/blocs/app/app_bloc.dart';
 import 'package:todos_app/cubits/auth/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,11 +9,11 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
+        if (state.status == AuthStatus.success) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login successful')));
+        }
         if (state.status == AuthStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login failed')));
-        }
-        if (state.status == AuthStatus.success) {
-          context.read<AppBloc>().add(AppUserChanged(state.user));
         }
       },
       child: AutofillGroup(

@@ -1,18 +1,18 @@
-import 'package:todos_app/repositories/auth_repository.dart';
+import 'package:todos_app/repositories/user_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  ProfileCubit(this._authRepository)
+  ProfileCubit(this._userRepository)
       : super(ProfileState(
-          email: _authRepository.currentUser!.email,
-          name: _authRepository.currentUser!.name,
-          avatar: _authRepository.currentUser!.avatar,
+          email: _userRepository.currentUserAuth!.email,
+          name: _userRepository.currentUserAuth!.name,
+          avatar: _userRepository.currentUserAuth!.avatar,
         ));
 
-  final AuthRepository _authRepository;
+  final UserRepository _userRepository;
 
   String? _editNameCtrl;
   String? _editAvatarCtrl;
@@ -33,14 +33,14 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> onSaveEditProfile() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      await _authRepository.updateUser(_authRepository.currentUser!.copyWith(
+      await _userRepository.updateUser(_userRepository.currentUserAuth!.copyWith(
         name: _editNameCtrl,
         avatar: _editAvatarCtrl,
       ));
       emit(state.copyWith(
         status: ProfileStatus.success,
-        name: _authRepository.currentUser!.name,
-        avatar: _authRepository.currentUser!.avatar,
+        name: _editNameCtrl,
+        avatar: _editAvatarCtrl,
       ));
     } catch (e) {
       print(e);
@@ -51,7 +51,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> onSaveChangePassword() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      await _authRepository.updateUser(_authRepository.currentUser!.copyWith(
+      await _userRepository.updateUser(_userRepository.currentUserAuth!.copyWith(
         password: _newPasswordCtrl,
       ));
       emit(state.copyWith(status: ProfileStatus.success));

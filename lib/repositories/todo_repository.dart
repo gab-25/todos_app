@@ -1,26 +1,34 @@
+import 'package:sqflite/sqflite.dart';
 import 'package:todos_app/models/todo.dart';
-import 'package:todos_app/services/db_service.dart';
+import 'package:todos_app/services/entity_service.dart';
 
 class TodoRepository {
-  TodoRepository(this._dbService);
-
-  final table = 'todos';
-
-  final DbService _dbService;
-
-  Future<List<Todo>> getTodos() async {
-    return (await _dbService.getEntities(table)).map((todo) => Todo.fromMap(todo)).toList();
+  TodoRepository(this._db) {
+    _entityService = EntityService(
+      _db,
+      'todos',
+      (map) => Todo.fromMap(map),
+      (todo) => todo.toMap(),
+    );
   }
 
-  Future<Todo> getTodo(int id) async {
-    return Todo.fromMap(await _dbService.getEntity(table, id));
+  final Database _db;
+  late final EntityService<Todo> _entityService;
+
+
+  Future<List<Todo>> getTodos() {
+    return _entityService.getEntities();
   }
 
-  Future<void> saveTodo(Todo todo) async {
-    return _dbService.saveEntity(table, todo.toMap());
+  Future<Todo?> getTodo(int id) {
+    return _entityService.getEntity(id);
   }
 
-  Future<void> deleteTodo(int id) async {
-    return _dbService.deleteEntity(table, id);
+  Future<void> saveTodo(Todo todo) {
+    return _entityService.saveEntity(todo);
+  }
+
+  Future<void> deleteTodo(int id) {
+    return _entityService.deleteEntity(id);
   }
 }

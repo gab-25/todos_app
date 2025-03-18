@@ -2,7 +2,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:todos_app/blocs/app/app_bloc.dart';
 import 'package:todos_app/repositories/user_repository.dart';
 import 'package:todos_app/repositories/todo_repository.dart';
-import 'package:todos_app/services/db_service.dart';
 import 'package:todos_app/ui/pages/todo_page.dart';
 import 'package:todos_app/ui/pages/login_page.dart';
 import 'package:todos_app/ui/pages/profile_page.dart';
@@ -17,19 +16,14 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiRepositoryProvider(
       providers: [
-        Provider(create: (_) => DbService(db)),
+        RepositoryProvider(create: (context) => UserRepository(db)),
+        RepositoryProvider(create: (context) => TodoRepository(db)),
       ],
-      child: MultiRepositoryProvider(
-        providers: [
-          RepositoryProvider(create: (context) => UserRepository(context.read<DbService>())),
-          RepositoryProvider(create: (context) => TodoRepository(context.read<DbService>())),
-        ],
-        child: BlocProvider(
-          create: (context) => AppBloc(),
-          child: const AppView(),
-        ),
+      child: BlocProvider(
+        create: (context) => AppBloc(context.read<UserRepository>())..add(const AppUserAuthChanged()),
+        child: const AppView(),
       ),
     );
   }

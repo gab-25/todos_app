@@ -1,6 +1,6 @@
-import 'package:todos_app/blocs/app/app_bloc.dart';
+import 'package:todos_app/cubits/auth/auth_cubit.dart';
 import 'package:todos_app/cubits/profile/profile_cubit.dart';
-import 'package:todos_app/repositories/auth_repository.dart';
+import 'package:todos_app/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,8 +15,11 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: const Text('Profile'),
       ),
-      body: BlocProvider(
-        create: (context) => ProfileCubit(context.read<AuthRepository>()),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => ProfileCubit(context.read<UserRepository>())),
+          BlocProvider(create: (context) => AuthCubit(context.read<UserRepository>())),
+        ],
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Center(
@@ -52,8 +55,11 @@ class ProfilePage extends StatelessWidget {
                   FilledButton(
                     onPressed: () => showDialog(
                       context: context,
-                      builder: (_) => BlocProvider.value(
-                        value: BlocProvider.of<ProfileCubit>(context),
+                      builder: (_) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: BlocProvider.of<ProfileCubit>(context)),
+                          BlocProvider.value(value: BlocProvider.of<AuthCubit>(context)),
+                        ],
                         child: const ChangePasswordDialog(),
                       ),
                     ),
@@ -62,7 +68,7 @@ class ProfilePage extends StatelessWidget {
                   const SizedBox(height: 10),
                   FilledButton(
                     onPressed: () {
-                      context.read<AppBloc>().add(const AppLogoutPressed());
+                      context.read<AuthCubit>().onLogout();
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     child: const Text('Logout'),
@@ -86,6 +92,9 @@ class EditProfileDialog extends StatelessWidget {
       listener: (context, state) {
         if (state.status == ProfileStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated')));
+        }
+        if (state.status == ProfileStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile update failed')));
         }
       },
       child: SimpleDialog(
@@ -124,7 +133,6 @@ class EditProfileDialog extends StatelessWidget {
                         onPressed: state.status != ProfileStatus.loading
                             ? () async {
                                 await context.read<ProfileCubit>().onSaveEditProfile();
-                                context.read<AppBloc>().add(const AppUserUpdated());
                                 Navigator.of(context).pop();
                               }
                             : null,
@@ -151,7 +159,7 @@ class ChangePasswordDialog extends StatelessWidget {
       listener: (context, state) {
         if (state.status == ProfileStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password changed')));
-          context.read<AppBloc>().add(const AppLogoutPressed());
+          context.read<AuthCubit>().onLogout();
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
         if (state.status == ProfileStatus.error) {

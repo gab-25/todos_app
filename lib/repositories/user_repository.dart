@@ -1,28 +1,58 @@
+import 'dart:async';
+
+import 'package:sqflite/sqflite.dart';
 import 'package:todos_app/models/user.dart';
-import 'package:todos_app/services/db_service.dart';
+import 'package:todos_app/services/entity_service.dart';
 
 class UserRepository {
-  UserRepository(this._dbService);
+  UserRepository(this._db) {
+    _entityService = EntityService(
+      _db,
+      'users',
+      (map) => User.fromMap(map),
+      (user) => user.toMap(),
+    );
+  }
 
-  final table = 'users';
+  final Database _db;
+  late final EntityService<User> _entityService;
 
-  final DbService _dbService;
+  User? _userAuth;
+  final StreamController<User?> _userAuthController = StreamController<User?>();
 
-  Future<User?> getUserByEmailAndPassword(String email, String password) async {
-    final users = (await _dbService.getEntities(table)).map((user) => User.fromMap(user)).toList();
+  User? get currentUserAuth => _userAuth;
+
+  Stream<User?> get userAuth {
+    return _userAuthController.stream;
+  }
+
+  Future<bool> authUserByEmailAndPassword(String email, String password) async {
+    final users = await _entityService.getEntities();
     try {
-      return users.firstWhere((user) => user.email == email && user.password == password);
+      final userAuth = users.firstWhere((user) => user.email == email && user.password == password);
+      _userAuth = userAuth;
+      _userAuthController.add(_userAuth);
+      return true;
     } catch (e) {
       print(e);
     }
-    return null;
+    return false;
   }
 
-  Future<User?> getUser(int id) async {
-    return User.fromMap(await _dbService.getEntity(table, id));
+  void setUserAuthToNull() {
+    _userAuth = null;
+    _userAuthController.add(null);
+  }
+
+  Future<User?> getUser(int id) {
+    return _entityService.getEntity(id);
   }
 
   Future<void> updateUser(User user) async {
-    return _dbService.saveEntity(table, user.toMap());
+    await _entityService.saveEntity(user);
+    if (_userAuth?.id == user.id) {
+      _userAuth = user;
+      _userAuthController.add(_userAuth);
+    }
   }
 }
