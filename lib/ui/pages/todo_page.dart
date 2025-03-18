@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todos_app/blocs/todo/todo_bloc.dart';
+import 'package:todos_app/ui/components/todo_list.dart';
 
 class TodoPage extends StatelessWidget {
   const TodoPage({super.key});
@@ -9,7 +12,13 @@ class TodoPage extends StatelessWidget {
       appBar: AppBar(
         foregroundColor: Colors.black,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("Todo List"),
+        title: const Row(
+          children: [
+            Icon(Icons.edit_note, size: 32),
+            SizedBox(width: 6),
+            Text("Todo List"),
+          ],
+        ),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -19,7 +28,16 @@ class TodoPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Builder(builder: (context) => const Center(child: Text('Not widget found'))),
+      body: Builder(
+        builder: (context) => BlocProvider(
+          create: (context) => TodoBloc(),
+          child: const TodoList(),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {},
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
