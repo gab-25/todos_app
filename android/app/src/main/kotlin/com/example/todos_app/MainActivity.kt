@@ -1,4 +1,4 @@
-package com.app.energymonitor
+package com.app.todos
 
 import io.flutter.embedding.android.FlutterActivity
 
