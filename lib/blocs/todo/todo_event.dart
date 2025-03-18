@@ -19,3 +19,10 @@ final class DeleteTodo extends TodoEvent {
 
   final int todoId;
 }
+
+final class CheckedTodo extends TodoEvent {
+  const CheckedTodo(this.todoId, this.completed);
+
+  final int todoId;
+  final bool completed;
+}

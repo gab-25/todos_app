@@ -25,7 +25,7 @@ class TodoDetailState extends Equatable {
     bool? completed,
   }) {
     return TodoDetailState(
-      id: id,
+      id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       completed: completed ?? this.completed,
